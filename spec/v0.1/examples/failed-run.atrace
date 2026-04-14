@@ -1,0 +1,96 @@
+{
+  "atrace": "0.1.0",
+  "id": "trace_failed_001",
+  "agent": {
+    "name": "data-fetcher-agent",
+    "model": "claude-sonnet-4-20250514",
+    "version": "1.0.3"
+  },
+  "goal": "Fetch the latest user signup count from the analytics API and send a Slack summary",
+  "status": "failed",
+  "started_at": "2026-04-14T09:00:00Z",
+  "ended_at": "2026-04-14T09:00:31Z",
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "think",
+      "started_at": "2026-04-14T09:00:01Z",
+      "reasoning": "I need to call the analytics API to get today's signup count, then format it and post to Slack."
+    },
+    {
+      "id": "step_2",
+      "type": "tool_call",
+      "started_at": "2026-04-14T09:00:02Z",
+      "ended_at": "2026-04-14T09:00:08Z",
+      "tool": "http_get",
+      "input": {
+        "url": "https://analytics.internal/api/signups/today",
+        "headers": { "Authorization": "Bearer ${ANALYTICS_API_KEY}" }
+      },
+      "output": null,
+      "duration_ms": 6100,
+      "error": "HTTP 429: Rate limit exceeded. Retry-After: 60s"
+    },
+    {
+      "id": "step_3",
+      "type": "think",
+      "started_at": "2026-04-14T09:00:08Z",
+      "reasoning": "Got a 429. The API is rate limited. I should wait 60 seconds and retry once."
+    },
+    {
+      "id": "step_4",
+      "type": "tool_call",
+      "started_at": "2026-04-14T09:00:09Z",
+      "ended_at": "2026-04-14T09:00:10Z",
+      "tool": "wait",
+      "input": { "seconds": 60 },
+      "output": { "waited_ms": 60000 },
+      "duration_ms": 60000,
+      "error": null,
+      "meta": {
+        "reason": "rate_limit_backoff"
+      }
+    },
+    {
+      "id": "step_5",
+      "type": "tool_call",
+      "started_at": "2026-04-14T09:01:10Z",
+      "ended_at": "2026-04-14T09:01:16Z",
+      "tool": "http_get",
+      "input": {
+        "url": "https://analytics.internal/api/signups/today",
+        "headers": { "Authorization": "Bearer ${ANALYTICS_API_KEY}" }
+      },
+      "output": null,
+      "duration_ms": 6200,
+      "error": "HTTP 429: Rate limit exceeded. Retry-After: 300s"
+    },
+    {
+      "id": "step_6",
+      "type": "think",
+      "started_at": "2026-04-14T09:01:16Z",
+      "reasoning": "Still rate limited after waiting 60 seconds. The Retry-After header is now 300 seconds. Waiting 5 minutes would exceed the allowed task timeout. I should fail gracefully and report the issue."
+    },
+    {
+      "id": "step_7",
+      "type": "error",
+      "started_at": "2026-04-14T09:01:17Z",
+      "message": "Analytics API returned HTTP 429 on both attempts. Second retry-after is 300s, which exceeds task timeout. Aborting without sending Slack message.",
+      "code": "TOOL_RATE_LIMITED",
+      "recoverable": true,
+      "meta": {
+        "tool": "http_get",
+        "attempts": 2,
+        "last_retry_after_seconds": 300,
+        "suggested_action": "Retry after 09:06:17Z or increase task timeout to >360s"
+      }
+    }
+  ],
+  "meta": {
+    "total_tokens": 892,
+    "framework": "custom",
+    "environment": "production",
+    "alert_sent": false,
+    "tags": ["analytics", "slack-summary", "rate-limited"]
+  }
+}

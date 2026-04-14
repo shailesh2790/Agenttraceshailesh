@@ -1,0 +1,119 @@
+{
+  "atrace": "0.1.0",
+  "id": "trace_tooluse_001",
+  "agent": {
+    "name": "research-agent",
+    "model": "claude-sonnet-4-20250514",
+    "version": "1.2.0"
+  },
+  "goal": "Find the top 3 competitors for a storytelling app targeting anxious communicators",
+  "status": "completed",
+  "started_at": "2026-04-14T10:00:00Z",
+  "ended_at": "2026-04-14T10:00:44Z",
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "think",
+      "started_at": "2026-04-14T10:00:01Z",
+      "ended_at": "2026-04-14T10:00:02Z",
+      "reasoning": "The user wants competitor research for a storytelling app. I should search for apps in the public speaking and communication coaching space, then look for any specifically targeting anxious or introverted users."
+    },
+    {
+      "id": "step_2",
+      "type": "tool_call",
+      "started_at": "2026-04-14T10:00:02Z",
+      "ended_at": "2026-04-14T10:00:03Z",
+      "tool": "web_search",
+      "input": {
+        "query": "storytelling app public speaking coach anxiety 2026"
+      },
+      "output": {
+        "results": [
+          { "title": "Orai - Public Speaking Coach", "url": "https://orai.com" },
+          { "title": "Speeko - Public Speaking App", "url": "https://speeko.co" },
+          { "title": "Yoodli AI Speech Coach", "url": "https://yoodli.ai" },
+          { "title": "Ummo - Filler Word Counter", "url": "https://ummoapp.com" }
+        ]
+      },
+      "duration_ms": 1240,
+      "error": null
+    },
+    {
+      "id": "step_3",
+      "type": "think",
+      "started_at": "2026-04-14T10:00:03Z",
+      "ended_at": "2026-04-14T10:00:04Z",
+      "reasoning": "Good results. Orai, Speeko, and Yoodli are the strongest candidates. I should fetch each of their landing pages to understand their positioning and pricing before writing my response."
+    },
+    {
+      "id": "step_4",
+      "type": "tool_call",
+      "started_at": "2026-04-14T10:00:04Z",
+      "ended_at": "2026-04-14T10:00:16Z",
+      "tool": "web_fetch",
+      "input": {
+        "url": "https://orai.com",
+        "extract": "pricing, tagline, target_audience"
+      },
+      "output": {
+        "tagline": "Your AI public speaking coach",
+        "pricing": "Free + $12.99/month Pro",
+        "target_audience": "professionals, students"
+      },
+      "duration_ms": 12100,
+      "error": null
+    },
+    {
+      "id": "step_5",
+      "type": "tool_call",
+      "started_at": "2026-04-14T10:00:16Z",
+      "ended_at": "2026-04-14T10:00:28Z",
+      "tool": "web_fetch",
+      "input": {
+        "url": "https://yoodli.ai",
+        "extract": "pricing, tagline, target_audience"
+      },
+      "output": {
+        "tagline": "AI-powered speech coaching",
+        "pricing": "Free + $25/month Pro",
+        "target_audience": "executives, sales teams"
+      },
+      "duration_ms": 11800,
+      "error": null
+    },
+    {
+      "id": "step_6",
+      "type": "tool_call",
+      "started_at": "2026-04-14T10:00:28Z",
+      "ended_at": "2026-04-14T10:00:40Z",
+      "tool": "web_fetch",
+      "input": {
+        "url": "https://speeko.co",
+        "extract": "pricing, tagline, target_audience"
+      },
+      "output": {
+        "tagline": "Build your confidence",
+        "pricing": "Free + $9.99/month",
+        "target_audience": "introverts, anxious communicators"
+      },
+      "duration_ms": 11600,
+      "error": null
+    },
+    {
+      "id": "step_7",
+      "type": "respond",
+      "started_at": "2026-04-14T10:00:42Z",
+      "ended_at": "2026-04-14T10:00:44Z",
+      "content": "Here are the top 3 competitors for a storytelling app targeting anxious communicators:\n\n1. **Speeko** ($9.99/mo) — closest positioning to your app, explicitly targets introverts and anxious communicators. Biggest direct competitor.\n\n2. **Orai** ($12.99/mo) — strong AI feedback on delivery, targets professionals and students. Less anxiety-focused but significant market share.\n\n3. **Yoodli** ($25/mo) — premium positioning targeting executives. Less direct competition but validates the AI coaching model at higher price points.",
+      "final": true
+    }
+  ],
+  "meta": {
+    "total_tokens": 2841,
+    "input_tokens": 680,
+    "output_tokens": 2161,
+    "total_cost_usd": 0.0072,
+    "framework": "custom",
+    "tags": ["competitor-research"]
+  }
+}
