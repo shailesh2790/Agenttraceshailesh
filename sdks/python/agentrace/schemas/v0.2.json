@@ -1,0 +1,256 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://agentrace.dev/spec/v0.2/schema.json",
+  "title": "AgentTrace v0.2",
+  "description": "Schema for the AgentTrace open agent trace format. All v0.1 traces are valid against this schema.",
+  "type": "object",
+  "required": ["atrace", "id", "agent", "goal", "status", "started_at", "steps"],
+  "additionalProperties": false,
+  "properties": {
+    "atrace": {
+      "type": "string",
+      "pattern": "^0\\.2\\.\\d+$",
+      "description": "Spec version. Must match 0.2.x"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique trace ID"
+    },
+    "agent": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "model": { "type": "string" },
+        "version": { "type": "string" }
+      }
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Plain English statement of what the agent was asked to do"
+    },
+    "input": {
+      "type": "string",
+      "description": "The raw prompt or input passed to the agent. Use when goal is a developer summary and you also want the verbatim user message."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["running", "completed", "failed", "cancelled"]
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ended_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "parent_trace_id": {
+      "type": "string"
+    },
+    "tokens": {
+      "$ref": "#/definitions/tokens_object"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/any_step"
+      }
+    },
+    "meta": {
+      "type": "object",
+      "description": "Arbitrary key-value metadata"
+    }
+  },
+  "definitions": {
+    "tokens_object": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Standardised token accounting for the full trace",
+      "properties": {
+        "input":       { "type": "integer", "minimum": 0, "description": "Tokens in the input prompt" },
+        "output":      { "type": "integer", "minimum": 0, "description": "Tokens generated in the output" },
+        "cache_read":  { "type": "integer", "minimum": 0, "description": "Tokens read from prompt cache" },
+        "cache_write": { "type": "integer", "minimum": 0, "description": "Tokens written to prompt cache" },
+        "total":       { "type": "integer", "minimum": 0, "description": "Total tokens" }
+      }
+    },
+    "any_step": {
+      "oneOf": [
+        { "$ref": "#/definitions/think_step" },
+        { "$ref": "#/definitions/tool_call_step" },
+        { "$ref": "#/definitions/respond_step" },
+        { "$ref": "#/definitions/handoff_step" },
+        { "$ref": "#/definitions/error_step" },
+        { "$ref": "#/definitions/memory_step" },
+        { "$ref": "#/definitions/loop_step" },
+        { "$ref": "#/definitions/custom_step" }
+      ]
+    },
+    "base_step": {
+      "type": "object",
+      "required": ["id", "type", "started_at"],
+      "properties": {
+        "id":         { "type": "string", "minLength": 1 },
+        "type":       { "type": "string" },
+        "started_at": { "type": "string", "format": "date-time" },
+        "ended_at":   { "type": "string", "format": "date-time" },
+        "retry_of":   { "type": "string", "description": "ID of the step this is a retry of" },
+        "meta":       { "type": "object" }
+      }
+    },
+    "think_step": {
+      "allOf": [
+        { "$ref": "#/definitions/base_step" },
+        {
+          "type": "object",
+          "required": ["type", "reasoning"],
+          "additionalProperties": true,
+          "properties": {
+            "type":      { "type": "string", "const": "think" },
+            "reasoning": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    },
+    "tool_call_step": {
+      "allOf": [
+        { "$ref": "#/definitions/base_step" },
+        {
+          "type": "object",
+          "required": ["type", "tool", "input"],
+          "additionalProperties": true,
+          "properties": {
+            "type":        { "type": "string", "const": "tool_call" },
+            "tool":        { "type": "string", "minLength": 1 },
+            "input":       { "type": "object" },
+            "output":      {},
+            "duration_ms": { "type": "number", "minimum": 0 },
+            "error":       { "type": ["string", "null"] }
+          }
+        }
+      ]
+    },
+    "respond_step": {
+      "allOf": [
+        { "$ref": "#/definitions/base_step" },
+        {
+          "type": "object",
+          "required": ["type", "content"],
+          "additionalProperties": true,
+          "properties": {
+            "type":    { "type": "string", "const": "respond" },
+            "content": { "type": "string", "minLength": 1 },
+            "format":  { "type": "string", "enum": ["text", "markdown", "json", "html"] },
+            "final":   { "type": "boolean" }
+          }
+        }
+      ]
+    },
+    "handoff_step": {
+      "allOf": [
+        { "$ref": "#/definitions/base_step" },
+        {
+          "type": "object",
+          "required": ["type", "to_agent", "task"],
+          "additionalProperties": true,
+          "properties": {
+            "type":           { "type": "string", "const": "handoff" },
+            "to_agent":       { "type": "string", "minLength": 1 },
+            "task":           { "type": "string", "minLength": 1 },
+            "child_trace_id": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "error_step": {
+      "allOf": [
+        { "$ref": "#/definitions/base_step" },
+        {
+          "type": "object",
+          "required": ["type", "message"],
+          "additionalProperties": true,
+          "properties": {
+            "type":        { "type": "string", "const": "error" },
+            "message":     { "type": "string", "minLength": 1 },
+            "code":        { "type": "string" },
+            "recoverable": { "type": "boolean" }
+          }
+        }
+      ]
+    },
+    "memory_step": {
+      "allOf": [
+        { "$ref": "#/definitions/base_step" },
+        {
+          "type": "object",
+          "required": ["type", "operation"],
+          "additionalProperties": true,
+          "properties": {
+            "type":        { "type": "string", "const": "memory" },
+            "operation":   { "type": "string", "enum": ["read", "write", "delete", "search"] },
+            "store":       { "type": "string", "description": "Name or identifier of the memory store" },
+            "key":         { "type": "string", "description": "Key being read, written, or deleted" },
+            "value":       { "description": "Value written (write) or retrieved (read)" },
+            "query":       { "type": "string", "description": "Search query for search operations" },
+            "results":     { "type": "array", "description": "Results from a search operation" },
+            "duration_ms": { "type": "number", "minimum": 0 },
+            "error":       { "type": ["string", "null"] }
+          }
+        }
+      ]
+    },
+    "loop_step": {
+      "allOf": [
+        { "$ref": "#/definitions/base_step" },
+        {
+          "type": "object",
+          "required": ["type", "iterations"],
+          "additionalProperties": true,
+          "properties": {
+            "type":           { "type": "string", "const": "loop" },
+            "label":          { "type": "string", "description": "Human-readable name for this loop" },
+            "max_iterations": { "type": "integer", "minimum": 1 },
+            "exit_reason":    {
+              "type": "string",
+              "description": "Why the loop exited. Recommended: goal_reached, max_iterations, error, cancelled"
+            },
+            "iterations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["index", "steps"],
+                "additionalProperties": false,
+                "properties": {
+                  "index": { "type": "integer", "minimum": 1 },
+                  "steps": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/any_step" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "custom_step": {
+      "allOf": [
+        { "$ref": "#/definitions/base_step" },
+        {
+          "type": "object",
+          "required": ["type", "custom_type"],
+          "additionalProperties": true,
+          "properties": {
+            "type":        { "type": "string", "const": "custom" },
+            "custom_type": { "type": "string", "minLength": 1, "description": "Name of the custom step type. Convention: snake_case" },
+            "data":        { "type": "object", "description": "Arbitrary structured data for this custom step" }
+          }
+        }
+      ]
+    }
+  }
+}
