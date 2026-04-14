@@ -1,0 +1,90 @@
+{
+  "atrace": "0.2.0",
+  "id": "trace_memory_001",
+  "agent": {
+    "name": "personalised-coach-agent",
+    "model": "claude-sonnet-4-20250514",
+    "version": "3.1.0"
+  },
+  "goal": "Give the user a personalised public speaking tip based on their history",
+  "input": "What should I work on today?",
+  "status": "completed",
+  "started_at": "2026-04-14T08:00:00Z",
+  "ended_at": "2026-04-14T08:00:09Z",
+  "tokens": {
+    "input": 310,
+    "output": 284,
+    "cache_read": 1420,
+    "total": 2014
+  },
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "memory",
+      "started_at": "2026-04-14T08:00:01Z",
+      "ended_at": "2026-04-14T08:00:01Z",
+      "operation": "read",
+      "store": "user_profiles",
+      "key": "user_7823_preferences",
+      "value": {
+        "name": "Priya",
+        "level": "intermediate",
+        "weak_areas": ["filler_words", "pacing"],
+        "last_session": "2026-04-13",
+        "sessions_completed": 14
+      },
+      "duration_ms": 8
+    },
+    {
+      "id": "step_2",
+      "type": "memory",
+      "started_at": "2026-04-14T08:00:01Z",
+      "ended_at": "2026-04-14T08:00:02Z",
+      "operation": "search",
+      "store": "session_history_vector_db",
+      "query": "filler words pacing exercises for intermediate speakers",
+      "results": [
+        { "session_id": "sess_112", "exercise": "1-minute structured story", "score_improvement": 0.18 },
+        { "session_id": "sess_108", "exercise": "pace-mirror drill", "score_improvement": 0.12 }
+      ],
+      "duration_ms": 34
+    },
+    {
+      "id": "step_3",
+      "type": "think",
+      "started_at": "2026-04-14T08:00:02Z",
+      "reasoning": "Priya has 14 sessions. Her weakest area is filler words. The structured story exercise gave her the biggest improvement last time. I'll recommend that, framed around a specific scenario she hasn't used yet."
+    },
+    {
+      "id": "step_4",
+      "type": "memory",
+      "started_at": "2026-04-14T08:00:08Z",
+      "ended_at": "2026-04-14T08:00:08Z",
+      "operation": "write",
+      "store": "user_profiles",
+      "key": "user_7823_preferences",
+      "value": {
+        "name": "Priya",
+        "level": "intermediate",
+        "weak_areas": ["filler_words", "pacing"],
+        "last_session": "2026-04-14",
+        "sessions_completed": 15
+      },
+      "duration_ms": 6
+    },
+    {
+      "id": "step_5",
+      "type": "respond",
+      "started_at": "2026-04-14T08:00:08Z",
+      "ended_at": "2026-04-14T08:00:09Z",
+      "format": "markdown",
+      "content": "Hi Priya! Based on your recent sessions, your biggest opportunity is still **filler words** — you've made great progress but there's more to unlock.\n\n**Today's exercise:** Tell a 60-second story about a time you solved an unexpected problem at work. Focus on pausing instead of saying \"um\" or \"like\". Record yourself, then listen back and count the fillers.\n\nThis drill gave you your biggest improvement in session 14. Let's beat that score.",
+      "final": true
+    }
+  ],
+  "meta": {
+    "framework": "custom",
+    "environment": "production",
+    "tags": ["personalisation", "coaching", "memory"]
+  }
+}

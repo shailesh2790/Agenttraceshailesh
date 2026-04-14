@@ -1,0 +1,120 @@
+{
+  "atrace": "0.2.0",
+  "id": "trace_custom_001",
+  "agent": {
+    "name": "content-moderation-agent",
+    "model": "claude-sonnet-4-20250514",
+    "version": "1.0.0"
+  },
+  "goal": "Review a user-submitted story script and return a moderation decision with feedback",
+  "input": "Please review this script for our platform guidelines: [script content omitted for brevity]",
+  "status": "completed",
+  "started_at": "2026-04-14T14:00:00Z",
+  "ended_at": "2026-04-14T14:00:04Z",
+  "tokens": {
+    "input": 1280,
+    "output": 540,
+    "cache_read": 2400,
+    "total": 4220
+  },
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "custom",
+      "started_at": "2026-04-14T14:00:00Z",
+      "ended_at": "2026-04-14T14:00:00Z",
+      "custom_type": "pii_scrub",
+      "data": {
+        "input_length_chars": 4820,
+        "entities_detected": ["PERSON_NAME", "EMAIL"],
+        "entities_redacted": 2,
+        "output_length_chars": 4790
+      }
+    },
+    {
+      "id": "step_2",
+      "type": "custom",
+      "started_at": "2026-04-14T14:00:00Z",
+      "ended_at": "2026-04-14T14:00:01Z",
+      "custom_type": "guardrail_check",
+      "data": {
+        "policy": "content_safety_v2",
+        "categories_checked": ["violence", "hate_speech", "adult_content", "self_harm"],
+        "flags": [],
+        "passed": true,
+        "latency_ms": 42
+      }
+    },
+    {
+      "id": "step_3",
+      "type": "think",
+      "started_at": "2026-04-14T14:00:01Z",
+      "reasoning": "PII scrubbed, safety checks passed. Now I'll evaluate the script against our platform content guidelines: story structure, appropriate length, topic fit for the anxious communicators audience."
+    },
+    {
+      "id": "step_4",
+      "type": "memory",
+      "started_at": "2026-04-14T14:00:01Z",
+      "ended_at": "2026-04-14T14:00:02Z",
+      "operation": "search",
+      "store": "moderation_precedents",
+      "query": "scripts about workplace conflict resolution approved examples",
+      "results": [
+        { "script_id": "scr_8821", "decision": "approved", "category": "workplace_communication" },
+        { "script_id": "scr_9103", "decision": "approved_with_edits", "category": "conflict_resolution" }
+      ],
+      "duration_ms": 28
+    },
+    {
+      "id": "step_5",
+      "type": "think",
+      "started_at": "2026-04-14T14:00:02Z",
+      "reasoning": "Similar scripts in this category have been approved. The content is appropriate — workplace conflict resolution is core to our audience. Minor issue: the script runs 4 minutes, over our 3-minute guideline. I'll approve with an edit note."
+    },
+    {
+      "id": "step_6",
+      "type": "memory",
+      "started_at": "2026-04-14T14:00:03Z",
+      "ended_at": "2026-04-14T14:00:03Z",
+      "operation": "write",
+      "store": "moderation_log",
+      "key": "decision_trace_custom_001",
+      "value": {
+        "trace_id": "trace_custom_001",
+        "decision": "approved_with_edits",
+        "reviewer": "content-moderation-agent",
+        "timestamp": "2026-04-14T14:00:03Z"
+      },
+      "duration_ms": 5
+    },
+    {
+      "id": "step_7",
+      "type": "custom",
+      "started_at": "2026-04-14T14:00:03Z",
+      "ended_at": "2026-04-14T14:00:04Z",
+      "custom_type": "moderation_decision",
+      "data": {
+        "decision": "approved_with_edits",
+        "confidence": 0.96,
+        "policy_version": "content_safety_v2",
+        "flags": [],
+        "edit_required": true,
+        "edit_note": "Script runs ~4 minutes. Please trim to under 3 minutes per platform guidelines."
+      }
+    },
+    {
+      "id": "step_8",
+      "type": "respond",
+      "started_at": "2026-04-14T14:00:04Z",
+      "format": "markdown",
+      "content": "**Decision: Approved with edits**\n\nYour script is a good fit for the platform — workplace conflict resolution is exactly the kind of story our audience finds valuable.\n\n**One change required:** The script is approximately 4 minutes at a natural pace. Our platform guideline is 3 minutes maximum. Please trim by about 1 minute before publishing.\n\nSuggested cuts:\n- The opening setup (paragraphs 1–2) could be condensed from ~45 seconds to ~20 seconds\n- The resolution section restates the lesson twice — one statement is enough\n\nOnce edited, you can resubmit and it will be fast-tracked.",
+      "final": true
+    }
+  ],
+  "meta": {
+    "framework": "custom",
+    "environment": "production",
+    "moderation_pipeline": "v2",
+    "tags": ["moderation", "content-review", "custom-steps"]
+  }
+}

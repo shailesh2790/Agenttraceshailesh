@@ -1,0 +1,170 @@
+{
+  "atrace": "0.2.0",
+  "id": "trace_react_001",
+  "agent": {
+    "name": "research-react-agent",
+    "model": "claude-sonnet-4-20250514",
+    "version": "2.0.0"
+  },
+  "goal": "Find the current CEO and last funding round for three AI speech coaching startups: Orai, Speeko, and Yoodli",
+  "input": "Who runs Orai, Speeko, and Yoodli, and when did they last raise money?",
+  "status": "completed",
+  "started_at": "2026-04-14T12:00:00Z",
+  "ended_at": "2026-04-14T12:01:42Z",
+  "tokens": {
+    "input": 1840,
+    "output": 2310,
+    "cache_read": 4200,
+    "cache_write": 420,
+    "total": 8770
+  },
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "think",
+      "started_at": "2026-04-14T12:00:01Z",
+      "reasoning": "I need to find CEO and funding data for three companies. I'll run a ReAct loop — in each iteration I search for one company, observe the result, and decide whether I have enough to proceed or need to refine my query."
+    },
+    {
+      "id": "step_2",
+      "type": "loop",
+      "started_at": "2026-04-14T12:00:02Z",
+      "ended_at": "2026-04-14T12:01:38Z",
+      "label": "company_research_loop",
+      "max_iterations": 6,
+      "exit_reason": "goal_reached",
+      "iterations": [
+        {
+          "index": 1,
+          "steps": [
+            {
+              "id": "step_2_1_1",
+              "type": "think",
+              "started_at": "2026-04-14T12:00:02Z",
+              "reasoning": "Start with Orai. Search for CEO and latest funding."
+            },
+            {
+              "id": "step_2_1_2",
+              "type": "tool_call",
+              "started_at": "2026-04-14T12:00:03Z",
+              "ended_at": "2026-04-14T12:00:05Z",
+              "tool": "web_search",
+              "input": { "query": "Orai app CEO founder funding round 2025 2026" },
+              "output": {
+                "results": [
+                  { "title": "Orai raises $4M seed — TechCrunch", "snippet": "Founder and CEO Tejveer Bhupendra..." },
+                  { "title": "Orai LinkedIn", "snippet": "Tejveer Bhupendra — Founder & CEO" }
+                ]
+              },
+              "duration_ms": 1820
+            },
+            {
+              "id": "step_2_1_3",
+              "type": "think",
+              "started_at": "2026-04-14T12:00:05Z",
+              "reasoning": "Got CEO: Tejveer Bhupendra. Last funding: $4M seed. Sufficient. Move to Speeko."
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "steps": [
+            {
+              "id": "step_2_2_1",
+              "type": "think",
+              "started_at": "2026-04-14T12:00:06Z",
+              "reasoning": "Now searching for Speeko CEO and funding."
+            },
+            {
+              "id": "step_2_2_2",
+              "type": "tool_call",
+              "started_at": "2026-04-14T12:00:07Z",
+              "ended_at": "2026-04-14T12:00:09Z",
+              "tool": "web_search",
+              "input": { "query": "Speeko app CEO funding round crunchbase 2025" },
+              "output": {
+                "results": [
+                  { "title": "Speeko — Crunchbase", "snippet": "Total funding: $2.1M. Founder: Sean McMahon" },
+                  { "title": "Speeko raises pre-seed — AngelList", "snippet": "Sean McMahon, CEO..." }
+                ]
+              },
+              "duration_ms": 1640
+            },
+            {
+              "id": "step_2_2_3",
+              "type": "think",
+              "started_at": "2026-04-14T12:00:09Z",
+              "reasoning": "CEO: Sean McMahon. Total funding: $2.1M but no specific last round date. Need to refine."
+            },
+            {
+              "id": "step_2_2_4",
+              "type": "tool_call",
+              "started_at": "2026-04-14T12:00:10Z",
+              "ended_at": "2026-04-14T12:00:12Z",
+              "tool": "web_search",
+              "input": { "query": "Speeko Sean McMahon last funding date seed Series A" },
+              "output": {
+                "results": [
+                  { "title": "Speeko pre-seed 2021", "snippet": "Speeko closed a $1.2M pre-seed in March 2021" }
+                ]
+              },
+              "duration_ms": 1380,
+              "retry_of": "step_2_2_2"
+            },
+            {
+              "id": "step_2_2_5",
+              "type": "think",
+              "started_at": "2026-04-14T12:00:12Z",
+              "reasoning": "Last round: $1.2M pre-seed, March 2021. Sufficient. Move to Yoodli."
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "steps": [
+            {
+              "id": "step_2_3_1",
+              "type": "think",
+              "started_at": "2026-04-14T12:00:13Z",
+              "reasoning": "Now searching for Yoodli CEO and funding."
+            },
+            {
+              "id": "step_2_3_2",
+              "type": "tool_call",
+              "started_at": "2026-04-14T12:00:14Z",
+              "ended_at": "2026-04-14T12:00:16Z",
+              "tool": "web_search",
+              "input": { "query": "Yoodli AI CEO founder series A funding 2024 2025" },
+              "output": {
+                "results": [
+                  { "title": "Yoodli raises $6M Series A — VentureBeat", "snippet": "Co-founder and CEO Varun Puri..." },
+                  { "title": "Yoodli $6M funding TechCrunch 2023", "snippet": "Yoodli closed its Series A in November 2023" }
+                ]
+              },
+              "duration_ms": 1710
+            },
+            {
+              "id": "step_2_3_3",
+              "type": "think",
+              "started_at": "2026-04-14T12:00:16Z",
+              "reasoning": "CEO: Varun Puri. Last funding: $6M Series A, November 2023. I now have all three companies. Loop complete."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "step_3",
+      "type": "respond",
+      "started_at": "2026-04-14T12:01:40Z",
+      "ended_at": "2026-04-14T12:01:42Z",
+      "format": "markdown",
+      "content": "Here's what I found for the three companies:\n\n| Company | CEO | Last Funding |\n|---|---|---|\n| **Orai** | Tejveer Bhupendra | $4M seed |\n| **Speeko** | Sean McMahon | $1.2M pre-seed (March 2021) |\n| **Yoodli** | Varun Puri | $6M Series A (November 2023) |\n\nYoodli is the best-funded by a significant margin. Speeko has had no public raise since 2021, which may indicate either profitability or a quiet fundraise.",
+      "final": true
+    }
+  ],
+  "meta": {
+    "framework": "custom",
+    "tags": ["competitor-research", "react-loop"]
+  }
+}

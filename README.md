@@ -41,15 +41,30 @@ None of these tools need to know anything about the agent framework. They just r
 
 ## Spec
 
-→ [spec/v0.1/README.md](spec/v0.1/README.md) — full specification
+→ [spec/v0.2/README.md](spec/v0.2/README.md) — full specification (current)
 
-→ [spec/v0.1/schema.json](spec/v0.1/schema.json) — JSON Schema for validation
+→ [spec/v0.2/schema.json](spec/v0.2/schema.json) — JSON Schema for validation
 
-→ [spec/v0.1/examples/](spec/v0.1/examples/) — four example traces
+→ [spec/v0.2/examples/](spec/v0.2/examples/) — example traces
+
+→ [spec/v0.1/README.md](spec/v0.1/README.md) — v0.1 spec (stable, supported)
+
+→ [spec/CHANGELOG.md](spec/CHANGELOG.md) — full version history
 
 ---
 
 ## Examples
+
+### v0.2
+
+| File | What it shows |
+|---|---|
+| [memory-agent.atrace](spec/v0.2/examples/memory-agent.atrace) | Agent reading user profile and history from memory stores, writing back after each session |
+| [react-loop.atrace](spec/v0.2/examples/react-loop.atrace) | ReAct-style research loop with nested iterations, including an intra-loop retry |
+| [retry-with-backoff.atrace](spec/v0.2/examples/retry-with-backoff.atrace) | Exponential backoff retries linked via `retry_of`, plus a `custom` guardrail check step |
+| [custom-steps.atrace](spec/v0.2/examples/custom-steps.atrace) | Content moderation pipeline using `custom` steps for PII scrubbing, safety checks, and structured decisions |
+
+### v0.1
 
 | File | What it shows |
 |---|---|
