@@ -1,0 +1,95 @@
+import type { AgentTrace } from "./types";
+
+export const EXAMPLES: Array<{ label: string; trace: AgentTrace }> = [
+  {
+    label: "memory-agent",
+    trace: {
+      atrace: "0.2.0",
+      id: "trace_memory_001",
+      agent: { name: "personalised-coach-agent", model: "claude-sonnet-4-20250514", version: "3.1.0" },
+      goal: "Give the user a personalised public speaking tip based on their history",
+      input: "What should I work on today?",
+      status: "completed",
+      started_at: "2026-04-14T08:00:00Z",
+      ended_at: "2026-04-14T08:00:09Z",
+      tokens: { input: 310, output: 284, cache_read: 1420, total: 2014 },
+      steps: [
+        { id: "step_1", type: "memory", started_at: "2026-04-14T08:00:01Z", ended_at: "2026-04-14T08:00:01Z", operation: "read", store: "user_profiles", key: "user_7823_preferences", value: { name: "Priya", level: "intermediate", weak_areas: ["filler_words", "pacing"], last_session: "2026-04-13", sessions_completed: 14 }, duration_ms: 8 },
+        { id: "step_2", type: "memory", started_at: "2026-04-14T08:00:01Z", ended_at: "2026-04-14T08:00:02Z", operation: "search", store: "session_history_vector_db", query: "filler words pacing exercises for intermediate speakers", results: [{ session_id: "sess_112", exercise: "1-minute structured story", score_improvement: 0.18 }, { session_id: "sess_108", exercise: "pace-mirror drill", score_improvement: 0.12 }], duration_ms: 34 },
+        { id: "step_3", type: "think", started_at: "2026-04-14T08:00:02Z", reasoning: "Priya has 14 sessions. Her weakest area is filler words. The structured story exercise gave her the biggest improvement last time. I'll recommend that, framed around a specific scenario she hasn't used yet." },
+        { id: "step_4", type: "memory", started_at: "2026-04-14T08:00:08Z", ended_at: "2026-04-14T08:00:08Z", operation: "write", store: "user_profiles", key: "user_7823_preferences", value: { name: "Priya", level: "intermediate", weak_areas: ["filler_words", "pacing"], last_session: "2026-04-14", sessions_completed: 15 }, duration_ms: 6 },
+        { id: "step_5", type: "respond", started_at: "2026-04-14T08:00:08Z", ended_at: "2026-04-14T08:00:09Z", format: "markdown", content: "Hi Priya! Based on your recent sessions, your biggest opportunity is still **filler words** — you've made great progress but there's more to unlock.\n\n**Today's exercise:** Tell a 60-second story about a time you solved an unexpected problem at work. Focus on pausing instead of saying \"um\" or \"like\". Record yourself, then listen back and count the fillers.\n\nThis drill gave you your biggest improvement in session 14. Let's beat that score.", final: true },
+      ],
+      meta: { framework: "custom", environment: "production", tags: ["personalisation", "coaching", "memory"] },
+    },
+  },
+  {
+    label: "react-loop",
+    trace: {
+      atrace: "0.2.0",
+      id: "trace_react_001",
+      agent: { name: "research-react-agent", model: "claude-sonnet-4-20250514", version: "2.0.0" },
+      goal: "Find the current CEO and last funding round for three AI speech coaching startups: Orai, Speeko, and Yoodli",
+      input: "Who runs Orai, Speeko, and Yoodli, and when did they last raise money?",
+      status: "completed",
+      started_at: "2026-04-14T12:00:00Z",
+      ended_at: "2026-04-14T12:01:42Z",
+      tokens: { input: 1840, output: 2310, cache_read: 4200, cache_write: 420, total: 8770 },
+      steps: [
+        { id: "step_1", type: "think", started_at: "2026-04-14T12:00:01Z", reasoning: "I need to find CEO and funding data for three companies. I'll run a ReAct loop — in each iteration I search for one company, observe the result, and decide whether I have enough to proceed or need to refine my query." },
+        {
+          id: "step_2", type: "loop", started_at: "2026-04-14T12:00:02Z", ended_at: "2026-04-14T12:01:38Z", label: "company_research_loop", max_iterations: 6, exit_reason: "goal_reached",
+          iterations: [
+            { index: 1, steps: [
+              { id: "step_2_1_1", type: "think", started_at: "2026-04-14T12:00:02Z", reasoning: "Start with Orai. Search for CEO and latest funding." },
+              { id: "step_2_1_2", type: "tool_call", started_at: "2026-04-14T12:00:03Z", ended_at: "2026-04-14T12:00:05Z", tool: "web_search", input: { query: "Orai app CEO founder funding round 2025 2026" }, output: { results: [{ title: "Orai raises $4M seed — TechCrunch", snippet: "Founder and CEO Tejveer Bhupendra..." }] }, duration_ms: 1820 },
+              { id: "step_2_1_3", type: "think", started_at: "2026-04-14T12:00:05Z", reasoning: "Got CEO: Tejveer Bhupendra. Last funding: $4M seed. Sufficient. Move to Speeko." },
+            ]},
+            { index: 2, steps: [
+              { id: "step_2_2_1", type: "think", started_at: "2026-04-14T12:00:06Z", reasoning: "Now searching for Speeko CEO and funding." },
+              { id: "step_2_2_2", type: "tool_call", started_at: "2026-04-14T12:00:07Z", ended_at: "2026-04-14T12:00:09Z", tool: "web_search", input: { query: "Speeko app CEO funding round crunchbase 2025" }, output: { results: [{ title: "Speeko — Crunchbase", snippet: "Total funding: $2.1M. Founder: Sean McMahon" }] }, duration_ms: 1640 },
+              { id: "step_2_2_3", type: "think", started_at: "2026-04-14T12:00:09Z", reasoning: "CEO: Sean McMahon. Total funding: $2.1M but no specific last round date. Need to refine." },
+              { id: "step_2_2_4", type: "tool_call", started_at: "2026-04-14T12:00:10Z", ended_at: "2026-04-14T12:00:12Z", retry_of: "step_2_2_2", tool: "web_search", input: { query: "Speeko Sean McMahon last funding date seed Series A" }, output: { results: [{ title: "Speeko pre-seed 2021", snippet: "Speeko closed a $1.2M pre-seed in March 2021" }] }, duration_ms: 1380 },
+              { id: "step_2_2_5", type: "think", started_at: "2026-04-14T12:00:12Z", reasoning: "Last round: $1.2M pre-seed, March 2021. Sufficient. Move to Yoodli." },
+            ]},
+            { index: 3, steps: [
+              { id: "step_2_3_1", type: "think", started_at: "2026-04-14T12:00:13Z", reasoning: "Now searching for Yoodli CEO and funding." },
+              { id: "step_2_3_2", type: "tool_call", started_at: "2026-04-14T12:00:14Z", ended_at: "2026-04-14T12:00:16Z", tool: "web_search", input: { query: "Yoodli AI CEO founder series A funding 2024 2025" }, output: { results: [{ title: "Yoodli raises $6M Series A — VentureBeat", snippet: "Co-founder and CEO Varun Puri..." }] }, duration_ms: 1710 },
+              { id: "step_2_3_3", type: "think", started_at: "2026-04-14T12:00:16Z", reasoning: "CEO: Varun Puri. Last funding: $6M Series A, November 2023. I now have all three companies. Loop complete." },
+            ]},
+          ],
+        },
+        { id: "step_3", type: "respond", started_at: "2026-04-14T12:01:40Z", ended_at: "2026-04-14T12:01:42Z", format: "markdown", content: "| Company | CEO | Last Funding |\n|---|---|---|\n| **Orai** | Tejveer Bhupendra | $4M seed |\n| **Speeko** | Sean McMahon | $1.2M pre-seed (March 2021) |\n| **Yoodli** | Varun Puri | $6M Series A (November 2023) |\n\nYoodli is the best-funded by a significant margin. Speeko has had no public raise since 2021.", final: true },
+      ],
+      meta: { framework: "custom", tags: ["competitor-research", "react-loop"] },
+    },
+  },
+  {
+    label: "retry + custom steps",
+    trace: {
+      atrace: "0.2.0",
+      id: "trace_retry_001",
+      agent: { name: "data-pipeline-agent", model: "claude-sonnet-4-20250514", version: "1.4.2" },
+      goal: "Pull yesterday's revenue figures from the payments API and write a Slack summary",
+      input: "Run the daily revenue report for 2026-04-13",
+      status: "completed",
+      started_at: "2026-04-14T06:00:00Z",
+      ended_at: "2026-04-14T06:01:58Z",
+      tokens: { input: 490, output: 620, total: 1110 },
+      steps: [
+        { id: "step_1", type: "think", started_at: "2026-04-14T06:00:01Z", reasoning: "I need to fetch revenue data for 2026-04-13 from the payments API, then format it as a Slack message." },
+        { id: "step_2", type: "tool_call", started_at: "2026-04-14T06:00:02Z", ended_at: "2026-04-14T06:00:09Z", tool: "http_get", input: { url: "https://payments.internal/api/revenue/daily", params: { date: "2026-04-13" } }, output: null, duration_ms: 7100, error: "HTTP 503: Service temporarily unavailable", meta: { attempt: 1 } },
+        { id: "step_3", type: "think", started_at: "2026-04-14T06:00:09Z", reasoning: "503 from payments API. This is likely transient. I'll wait 10 seconds and retry with exponential backoff." },
+        { id: "step_4", type: "tool_call", started_at: "2026-04-14T06:00:09Z", ended_at: "2026-04-14T06:00:10Z", tool: "wait", input: { seconds: 10 }, output: { waited_ms: 10000 }, duration_ms: 10000, meta: { reason: "exponential_backoff", backoff_attempt: 1 } },
+        { id: "step_5", type: "tool_call", retry_of: "step_2", started_at: "2026-04-14T06:00:19Z", ended_at: "2026-04-14T06:00:26Z", tool: "http_get", input: { url: "https://payments.internal/api/revenue/daily", params: { date: "2026-04-13" } }, output: null, duration_ms: 6800, error: "HTTP 503: Service temporarily unavailable", meta: { attempt: 2 } },
+        { id: "step_6", type: "think", started_at: "2026-04-14T06:00:26Z", reasoning: "Still 503 after 10s wait. Double the backoff to 20s and try once more." },
+        { id: "step_7", type: "tool_call", started_at: "2026-04-14T06:00:26Z", ended_at: "2026-04-14T06:00:27Z", tool: "wait", input: { seconds: 20 }, output: { waited_ms: 20000 }, duration_ms: 20000, meta: { reason: "exponential_backoff", backoff_attempt: 2 } },
+        { id: "step_8", type: "tool_call", retry_of: "step_2", started_at: "2026-04-14T06:00:46Z", ended_at: "2026-04-14T06:00:49Z", tool: "http_get", input: { url: "https://payments.internal/api/revenue/daily", params: { date: "2026-04-13" } }, output: { date: "2026-04-13", total_revenue_usd: 48320.50, transactions: 1204 }, duration_ms: 2940, meta: { attempt: 3 } },
+        { id: "step_9", type: "custom", started_at: "2026-04-14T06:00:49Z", ended_at: "2026-04-14T06:00:50Z", custom_type: "guardrail_check", data: { policy: "revenue_sanity_check", value: 48320.50, expected_range: { min: 20000, max: 200000 }, passed: true } },
+        { id: "step_10", type: "tool_call", started_at: "2026-04-14T06:01:55Z", ended_at: "2026-04-14T06:01:58Z", tool: "slack_post", input: { channel: "#revenue-daily", text: "*Revenue report — 2026-04-13*\n• Total: $48,320.50\n• Transactions: 1,204" }, output: { ok: true }, duration_ms: 310 },
+        { id: "step_11", type: "respond", started_at: "2026-04-14T06:01:58Z", format: "text", content: "Revenue report posted to #revenue-daily. Total: $48,320.50 across 1,204 transactions. API was temporarily unavailable — data retrieved after 2 retries.", final: true },
+      ],
+      meta: { framework: "custom", environment: "production", api_retries: 2, tags: ["revenue", "daily-report"] },
+    },
+  },
+];
