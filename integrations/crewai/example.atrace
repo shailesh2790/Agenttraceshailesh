@@ -1,0 +1,105 @@
+{
+  "atrace": "0.2.0",
+  "id": "at_crewai_competitive_analysis_001",
+  "agent": {
+    "name": "crew-orchestrator",
+    "model": "gpt-4o",
+    "version": "1.0.0"
+  },
+  "goal": "Produce a competitive analysis of LLM API providers",
+  "input": "Analyze the top LLM API competitors and produce an executive summary",
+  "status": "completed",
+  "started_at": "2025-09-15T12:00:00.000Z",
+  "ended_at": "2025-09-15T12:00:22.840Z",
+  "tokens": { "input": 2100, "output": 520 },
+  "steps": [
+    {
+      "id": "step_001",
+      "type": "handoff",
+      "to_agent": "researcher",
+      "task": "Research the top three competitors in the LLM API market",
+      "timestamp": "2025-09-15T12:00:00.150Z"
+    },
+    {
+      "id": "step_002",
+      "type": "think",
+      "content": "I need to gather data on LLM API providers.",
+      "timestamp": "2025-09-15T12:00:00.350Z"
+    },
+    {
+      "id": "step_003",
+      "type": "tool_call",
+      "tool": "web_search",
+      "input": { "query": "LLM API market competitors 2024" },
+      "output": "{\"providers\": [\"OpenAI\", \"Anthropic\", \"Google DeepMind\", \"Cohere\", \"Mistral AI\"],\"market_share\": {\"OpenAI\": \"55%\", \"Anthropic\": \"20%\", \"Google\": \"15%\", \"other\": \"10%\"}}",
+      "duration_ms": 1620,
+      "timestamp": "2025-09-15T12:00:00.500Z"
+    },
+    {
+      "id": "step_004",
+      "type": "think",
+      "content": "Now I need pricing data to complete the comparison.",
+      "timestamp": "2025-09-15T12:00:02.150Z"
+    },
+    {
+      "id": "step_005",
+      "type": "tool_call",
+      "tool": "fetch_pricing",
+      "input": { "providers": ["OpenAI", "Anthropic", "Google"] },
+      "output": "OpenAI gpt-4o: $5/M input, $15/M output. Anthropic claude-sonnet-4-6: $3/M input, $15/M output. Google gemini-1.5-pro: $3.5/M input, $10.5/M output.",
+      "duration_ms": 980,
+      "timestamp": "2025-09-15T12:00:02.300Z"
+    },
+    {
+      "id": "step_006",
+      "type": "custom",
+      "event": "task_complete",
+      "data": {
+        "task_index": 1,
+        "agent": "researcher",
+        "output_preview": "Competitive Intelligence Report:\n• OpenAI leads with ~55% market share; strong ecosystem\n• Anthropic at ~20%; best-in-class safety and extended thinking\n• Google DeepMind at ~15%; multimodal strength with Gemini\nPricing: Ant"
+      },
+      "timestamp": "2025-09-15T12:00:03.450Z"
+    },
+    {
+      "id": "step_007",
+      "type": "handoff",
+      "to_agent": "writer",
+      "task": "Draft an executive summary of the competitive analysis",
+      "timestamp": "2025-09-15T12:00:03.600Z"
+    },
+    {
+      "id": "step_008",
+      "type": "think",
+      "content": "I have all the data. I'll format it as a clean executive summary.",
+      "timestamp": "2025-09-15T12:00:03.750Z"
+    },
+    {
+      "id": "step_009",
+      "type": "tool_call",
+      "tool": "format_report",
+      "input": { "style": "executive_summary", "length": "concise" },
+      "output": "Report formatted with executive summary structure.",
+      "duration_ms": 420,
+      "timestamp": "2025-09-15T12:00:03.900Z"
+    },
+    {
+      "id": "step_010",
+      "type": "custom",
+      "event": "task_complete",
+      "data": {
+        "task_index": 2,
+        "agent": "writer",
+        "output_preview": "## LLM API Competitive Analysis — Executive Summary\n\n**Market Overview**\nThe LLM API market is dominated by three providers: OpenAI (55%), Anthropic (20%), and Google DeepMind (15%).\n\n**Key Findings**\n- OpenAI maintains the la"
+      },
+      "timestamp": "2025-09-15T12:00:21.200Z"
+    },
+    {
+      "id": "step_011",
+      "type": "respond",
+      "content": "## LLM API Competitive Analysis — Executive Summary\n\n**Market Overview**\nThe LLM API market is dominated by three providers: OpenAI (55%), Anthropic (20%), and Google DeepMind (15%).\n\n**Key Findings**\n- OpenAI maintains the largest ecosystem and developer mindshare\n- Anthropic offers the best safety story and competitive input pricing ($3/M tokens)\n- Google excels in multimodal tasks with Gemini's vision capabilities\n\n**Recommendation**\nFor safety-critical applications: Anthropic. For breadth of integrations: OpenAI. For multimodal or Google Cloud workloads: Google DeepMind.",
+      "final": true,
+      "timestamp": "2025-09-15T12:00:22.600Z"
+    }
+  ]
+}

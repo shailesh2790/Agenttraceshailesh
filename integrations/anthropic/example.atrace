@@ -1,0 +1,54 @@
+{
+  "atrace": "0.2.0",
+  "id": "at_anthropic_research_001",
+  "agent": {
+    "name": "research-agent",
+    "model": "claude-sonnet-4-6",
+    "version": "1.0.0"
+  },
+  "goal": "Find and compare the top AI agent frameworks",
+  "input": "What are the top AI agent frameworks and how do they compare?",
+  "status": "completed",
+  "started_at": "2025-09-15T10:00:00.000Z",
+  "ended_at": "2025-09-15T10:00:08.320Z",
+  "tokens": { "input": 1842, "output": 387 },
+  "steps": [
+    {
+      "id": "step_001",
+      "type": "think",
+      "content": "The user wants to know the top AI agent frameworks. I should search for current information since this space evolves quickly.",
+      "timestamp": "2025-09-15T10:00:00.120Z"
+    },
+    {
+      "id": "step_002",
+      "type": "tool_call",
+      "tool": "web_search",
+      "input": { "query": "top AI agent frameworks 2024 comparison" },
+      "output": "{\"results\":[{\"title\":\"Top AI Agent Frameworks in 2024\",\"url\":\"https://example.com/ai-agent-frameworks\",\"snippet\":\"LangChain, CrewAI, AutoGen, and LlamaIndex lead the space...\"},{\"title\":\"Comparing Multi-Agent Frameworks\",\"url\":\"https://example.com/compare-frameworks\",\"snippet\":\"Feature comparison: orchestration, memory, tool use...\"}]}",
+      "duration_ms": 1240,
+      "timestamp": "2025-09-15T10:00:00.280Z"
+    },
+    {
+      "id": "step_003",
+      "type": "think",
+      "content": "The search returned good results. Let me fetch the comparison page for more detailed information before writing my answer.",
+      "timestamp": "2025-09-15T10:00:01.540Z"
+    },
+    {
+      "id": "step_004",
+      "type": "tool_call",
+      "tool": "fetch_page",
+      "input": { "url": "https://example.com/compare-frameworks" },
+      "output": "LangChain: General-purpose LLM application framework with extensive tool ecosystem and LCEL chain composition. CrewAI: Role-based multi-agent orchestration with built-in collaboration. AutoGen: Microsoft's conversation-based agent framework with code execution support. LlamaIndex: Focused on RAG and data-grounded agents.",
+      "duration_ms": 980,
+      "timestamp": "2025-09-15T10:00:01.680Z"
+    },
+    {
+      "id": "step_005",
+      "type": "respond",
+      "content": "Based on my research, the top AI agent frameworks in 2024 are:\n\n1. **LangChain** — The most widely adopted framework with a rich tool ecosystem, LCEL for composing chains, and strong community support.\n\n2. **CrewAI** — Purpose-built for multi-agent orchestration with a role-based design that makes agent collaboration intuitive.\n\n3. **AutoGen** (Microsoft) — Excels at code-executing agents and conversation-driven multi-agent scenarios.\n\n4. **LlamaIndex** — The go-to choice for RAG-heavy agents that need to ground responses in proprietary documents.\n\nEach framework has distinct strengths; the best choice depends on whether you need broad tooling (LangChain), multi-agent teamwork (CrewAI), code generation (AutoGen), or data retrieval (LlamaIndex).",
+      "final": true,
+      "timestamp": "2025-09-15T10:00:07.900Z"
+    }
+  ]
+}

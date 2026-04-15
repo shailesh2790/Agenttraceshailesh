@@ -1,0 +1,54 @@
+{
+  "atrace": "0.2.0",
+  "id": "at_langchain_python_fw_001",
+  "agent": {
+    "name": "python-expert",
+    "model": "gpt-4o",
+    "version": "2.1.0"
+  },
+  "goal": "Recommend the best Python web framework for a new project",
+  "input": "What is the best Python web framework to use in 2024?",
+  "status": "completed",
+  "started_at": "2025-09-15T11:00:00.000Z",
+  "ended_at": "2025-09-15T11:00:06.450Z",
+  "tokens": { "input": 980, "output": 256 },
+  "steps": [
+    {
+      "id": "step_001",
+      "type": "think",
+      "content": "I need to find current information about Python web frameworks.",
+      "timestamp": "2025-09-15T11:00:00.110Z"
+    },
+    {
+      "id": "step_002",
+      "type": "tool_call",
+      "tool": "search",
+      "input": { "query": "current Python web frameworks 2024" },
+      "output": "[\"FastAPI\", \"Django\", \"Flask\", \"Starlette\", \"Tornado\"] — FastAPI leads in adoption for new APIs; Django remains dominant for full-stack apps.",
+      "duration_ms": 1350,
+      "timestamp": "2025-09-15T11:00:00.280Z"
+    },
+    {
+      "id": "step_003",
+      "type": "think",
+      "content": "FastAPI looks most promising. Let me get performance data.",
+      "timestamp": "2025-09-15T11:00:01.650Z"
+    },
+    {
+      "id": "step_004",
+      "type": "tool_call",
+      "tool": "lookup",
+      "input": { "topic": "FastAPI performance benchmarks" },
+      "output": "FastAPI achieves ~42,000 req/s on standard hardware (uvicorn). Outperforms Flask by ~10x and approaches raw Starlette throughput.",
+      "duration_ms": 870,
+      "timestamp": "2025-09-15T11:00:01.800Z"
+    },
+    {
+      "id": "step_005",
+      "type": "respond",
+      "content": "The top Python web frameworks in 2024 are:\n\n1. **FastAPI** — Best for high-performance APIs; async-native, auto-generates OpenAPI docs, ~42k req/s.\n2. **Django** — Full-stack batteries-included framework; ideal for rapid development with built-in admin, ORM, and auth.\n3. **Flask** — Lightweight micro-framework; great for small services where you want full control over components.\n\nFor new REST APIs, FastAPI is the recommended choice for its performance and developer experience.",
+      "final": true,
+      "timestamp": "2025-09-15T11:00:06.100Z"
+    }
+  ]
+}
