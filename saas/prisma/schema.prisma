@@ -1,10 +1,12 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -35,11 +37,11 @@ model Trace {
   projectId   String?
 
   // Indexed fields extracted from the raw trace (for fast list queries)
-  traceId     String   // AgentTrace.id field
+  traceId     String
   agentName   String
   agentModel  String?
   goal        String
-  status      String   // completed | failed | running | cancelled
+  status      String
   stepsCount  Int
   inputTokens Int?
   outputTokens Int?
@@ -47,7 +49,7 @@ model Trace {
   endedAt     DateTime?
 
   // Full trace JSON for the viewer
-  raw         String   // JSON blob
+  raw         String   @db.Text
 
   createdAt   DateTime @default(now())
 
@@ -63,8 +65,8 @@ model ApiKey {
   id         String    @id @default(cuid())
   userId     String
   name       String
-  keyPrefix  String    // first 8 chars — displayed in UI
-  keyHash    String    // bcrypt hash of full key
+  keyPrefix  String
+  keyHash    String
   createdAt  DateTime  @default(now())
   lastUsedAt DateTime?
 
