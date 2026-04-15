@@ -1,0 +1,5 @@
+saas/node_modules/
+saas/.next/
+saas/prisma/dev.db
+saas/.env.local
+saas/prisma/prisma/

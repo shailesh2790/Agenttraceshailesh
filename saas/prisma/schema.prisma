@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime @default(now())
+
+  traces   Trace[]
+  apiKeys  ApiKey[]
+  projects Project[]
+}
+
+model Project {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  createdAt DateTime @default(now())
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  traces Trace[]
+}
+
+model Trace {
+  id          String   @id @default(cuid())
+  userId      String
+  projectId   String?
+
+  // Indexed fields extracted from the raw trace (for fast list queries)
+  traceId     String   // AgentTrace.id field
+  agentName   String
+  agentModel  String?
+  goal        String
+  status      String   // completed | failed | running | cancelled
+  stepsCount  Int
+  inputTokens Int?
+  outputTokens Int?
+  startedAt   DateTime?
+  endedAt     DateTime?
+
+  // Full trace JSON for the viewer
+  raw         String   // JSON blob
+
+  createdAt   DateTime @default(now())
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([userId, status])
+  @@index([userId, createdAt])
+}
+
+model ApiKey {
+  id         String    @id @default(cuid())
+  userId     String
+  name       String
+  keyPrefix  String    // first 8 chars — displayed in UI
+  keyHash    String    // bcrypt hash of full key
+  createdAt  DateTime  @default(now())
+  lastUsedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
